@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>FastRTHelpers</id>
+    <version>1.0.0</version>
+    <title>Fast Runtime Type Helpers</title>
+    <authors>Maxim Chuvilyaev</authors>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Set of helper methods that provide fast runtime access to object's properties and fields (works more than 5x times faster than classic reflection)</description>
+    <copyright>Anigo Systems Pty Ltd</copyright>
+    <projectUrl></projectUrl>
+    <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
+    <tags>Reflection Dynamic Member Access</tags>
+    <language>en-US</language>
+    <releaseNotes>
+      * 1.0.0 - Initial release
+    </releaseNotes>
+  </metadata>
+</package>
