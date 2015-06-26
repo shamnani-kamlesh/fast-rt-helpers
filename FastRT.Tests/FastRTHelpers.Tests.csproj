@@ -43,7 +43,8 @@
     <Compile Include="TestA.cs" />
     <Compile Include="TestMemberAccessorsBehaviour.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestMemberAccessrosPerfomance.cs" />
+    <Compile Include="TestMemberAccessorsPerfomance.cs" />
+    <Compile Include="TestTypeGenerationBehaviour.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
