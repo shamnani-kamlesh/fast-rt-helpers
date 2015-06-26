@@ -8,7 +8,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Set of helper methods that provide fast runtime access to object's properties and fields (works more than 5x times faster than classic reflection)</description>
     <copyright>Anigo Systems Pty Ltd</copyright>
-    <projectUrl></projectUrl>
+    <projectUrl>https://github.com/smax48/fast-rt-helpers</projectUrl>
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
     <tags>Reflection Dynamic Member Access</tags>
     <language>en-US</language>

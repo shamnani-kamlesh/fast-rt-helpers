@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace FastRT
@@ -6,6 +7,7 @@ namespace FastRT
     public interface IObjectCache<in TKey>
     {
         T GetValue<T>(TKey key, Func<T> objectFactory);
+        void Clear();
     }
 
     public class EmptyObjectCache<TKey> : IObjectCache<TKey>
@@ -13,6 +15,10 @@ namespace FastRT
         public T GetValue<T>(TKey key, Func<T> objectFactory)
         {
             return objectFactory();
+        }
+
+        public void Clear()
+        {            
         }
 
         static readonly EmptyObjectCache<TKey> s_instance = new EmptyObjectCache<TKey>();
@@ -24,28 +30,25 @@ namespace FastRT
 
     public class ObjectCache<TKey> : IObjectCache<TKey>
     {
-        private readonly Dictionary<TKey, object> _dictionary;
+        private readonly ConcurrentDictionary<TKey, object> _dictionary;
 
         public ObjectCache(IEqualityComparer<TKey> keyComparer = null)
         {
-            _dictionary = new Dictionary<TKey, object>(keyComparer ?? EqualityComparer<TKey>.Default);
+            _dictionary = new ConcurrentDictionary<TKey, object>(keyComparer ?? EqualityComparer<TKey>.Default);
         }
 
+        /// <summary>
+        /// Try to find a cached value for the provided key. 
+        /// If value is not found, it is created using the objectFactory, cached and returned back
+        /// </summary>
         public T GetValue<T>(TKey key, Func<T> objectFactory)
         {
-            object result;
-            if (!_dictionary.TryGetValue(key, out result))
-            {
-                lock (_dictionary)
-                {
-                    if (!_dictionary.TryGetValue(key, out result))
-                    {
-                        result = objectFactory();
-                        _dictionary.Add(key, result);
-                    }
-                }
-            }
-            return (T)result;
+            return (T)_dictionary.GetOrAdd(key, k => objectFactory());
+        }
+
+        public void Clear()
+        {
+            _dictionary.Clear();
         }
     }
 }
