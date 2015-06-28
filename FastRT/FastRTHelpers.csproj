@@ -40,6 +40,7 @@
     <Compile Include="Impl\RuntimeDelegateFactory.cs" />
     <Compile Include="FuncMemberAccessor.cs" />
     <Compile Include="Impl\IMemberAccessDelegateProvider.cs" />
+    <Compile Include="IObjectAccessor.cs" />
     <Compile Include="ObjectAccessorBase.cs" />
     <Compile Include="ObjectCache.cs" />
     <Compile Include="IObjectMemberAccessor.cs" />
@@ -49,6 +50,7 @@
     <Compile Include="RTHelper.cs" />
     <Compile Include="DelegateMemberAccessor.cs" />
     <Compile Include="ObjectMemberAccessor.cs" />
+    <Compile Include="TypeAccessor.cs" />
     <Compile Include="TypeGenerator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

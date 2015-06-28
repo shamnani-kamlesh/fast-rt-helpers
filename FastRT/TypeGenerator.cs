@@ -5,19 +5,18 @@ using System.Reflection.Emit;
 using System.Linq;
 using System.Threading;
 
-namespace FastRT.Tests
+namespace FastRT
 {
     public static class TypeGenerator
     {
-        private static AssemblyBuilder s_ab;
-        private static ModuleBuilder s_mb;
-        private static ReaderWriterLockSlim s_lock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
+        private static readonly ModuleBuilder s_mb;
+        private static readonly ReaderWriterLockSlim s_lock = new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion);
 
         static TypeGenerator()
         {
             AssemblyName aName = new AssemblyName("FastRT.DynamicTypeGenerator");
-            s_ab = AppDomain.CurrentDomain.DefineDynamicAssembly(aName, AssemblyBuilderAccess.Run);
-            s_mb = s_ab.DefineDynamicModule(aName.Name);
+            AssemblyBuilder sAb = AppDomain.CurrentDomain.DefineDynamicAssembly(aName, AssemblyBuilderAccess.Run);
+            s_mb = sAb.DefineDynamicModule(aName.Name);
         }
 
         /// <summary>
@@ -59,11 +58,8 @@ namespace FastRT.Tests
                 tb.SetParent(typeof(ObjectAccessorBase<>).MakeGenericType(tb));
 
                 int order = 0;
-                foreach (var entry in typeDef)
-                {
-                    var fb = tb.DefineField(entry.Key, entry.Value, FieldAttributes.Public);
+                foreach (var fb in typeDef.Select(entry => tb.DefineField(entry.Key, entry.Value, FieldAttributes.Public)))
                     AddOrderAttribute(fb, order++);
-                }
 
                 return tb.CreateType();
             }
@@ -85,9 +81,10 @@ namespace FastRT.Tests
         {
             s_lock.EnterUpgradeableReadLock();
             Type newT;
+            var defEntries = objDef as IList<KeyValuePair<string, object>> ?? objDef.ToList();
             try
             {
-                newT = GetType(typeName) ?? MakeType(MakeTypeDef(objDef), typeName);
+                newT = GetType(typeName) ?? MakeType(MakeTypeDef(defEntries), typeName);
             }
             finally
             {
@@ -95,7 +92,7 @@ namespace FastRT.Tests
             }
 
             IObjectAccessor obj = (IObjectAccessor)Activator.CreateInstance(newT);
-            foreach (var entry in objDef)
+            foreach (var entry in defEntries)
                 obj[entry.Key] = entry.Value;
 
             return obj;
