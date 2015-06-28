@@ -16,7 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{8EC0AE
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8B1C211E-5299-43D1-A114-4F95EEB9B275}"
 	ProjectSection(SolutionItems) = preProject
-		FastRTHelpers.nuspec = FastRTHelpers.nuspec
+		FastRT\FastRTHelpers.nuspec = FastRT\FastRTHelpers.nuspec
 		readme.md = readme.md
 	EndProjectSection
 EndProject

@@ -2,8 +2,8 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>FastRTHelpers</id>
-    <version>1.0.0</version>
     <title>Fast Runtime Type Helpers</title>
+    <version>$version$</version>
     <authors>Maxim Chuvilyaev</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>Set of helper methods that provide fast runtime access to object's properties and fields (works more than 5x times faster than classic reflection)</description>
