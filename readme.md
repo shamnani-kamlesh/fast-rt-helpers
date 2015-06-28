@@ -45,9 +45,9 @@ var value = objectAccessor.GetValue();
 objectAccessor.SetValue(newValue);
 ```
 
-### Type generation from a list of field definitions {string, Type}
+### Type generation from a list of field definitions [string, Type]
 
-**Generate a new Type (which implements IObjectAccessor)**
+**How to generate a new type that implements IObjectAccessor**
 
 ```
 Dictionary<string, Type> typeDef = new Dictionary<string, Type>
@@ -60,7 +60,7 @@ Dictionary<string, Type> typeDef = new Dictionary<string, Type>
 Type t = TypeGenerator.MakeType(typeDef, "TestClassA");
 ```
 
-**Instantiate a new object (generate a new type if necessary)**
+**How to instantiate a new object (type is auto-generated on demand if necessary)**
 
 ```
 Dictionary<string, object> objDef = new Dictionary<string, object>
@@ -76,5 +76,4 @@ obj["StringProp"] = "new data";
 
 ## TODO
 1. dynamic objects support
-2. new Type generation from dictionary<string, Type> with indexers by id & name
-3. build delegates for method calls
+2. build fast delegates for method calls
