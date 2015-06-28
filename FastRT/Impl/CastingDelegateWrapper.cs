@@ -9,17 +9,17 @@ namespace FastRT.Impl
     /// <typeparam name="TMemberType">property's type</typeparam>
     internal class CastingDelegateWrapper<TObjectType, TMemberType> : IMemberAccessDelegateProvider<TObjectType, Object>
     {
-        private readonly RuntimeDelegateFactory.MemberGetDelegate<TObjectType, TMemberType> _delegateGet;
-        private readonly RuntimeDelegateFactory.MemberSetDelegate<TObjectType, TMemberType> _delegateSet;
+        private readonly Func<TObjectType, TMemberType> _delegateGet;
+        private readonly Action<TObjectType, TMemberType> _delegateSet;
         private readonly object _defaultValue;
 
-        public CastingDelegateWrapper(RuntimeDelegateFactory.MemberGetDelegate<TObjectType, TMemberType> del)
+        public CastingDelegateWrapper(Func<TObjectType, TMemberType> del)
         {
             _delegateGet = del;
             _delegateSet = null;
         }
 
-        public CastingDelegateWrapper(RuntimeDelegateFactory.MemberSetDelegate<TObjectType, TMemberType> del)
+        public CastingDelegateWrapper(Action<TObjectType, TMemberType> del)
         {
             _delegateGet = null;
             _delegateSet = del;
@@ -45,12 +45,12 @@ namespace FastRT.Impl
             }
         }
 
-        public RuntimeDelegateFactory.MemberGetDelegate<TObjectType, object> GetMemberGetDelegate()
+        public Func<TObjectType, object> GetMemberGetDelegate()
         {
             return InvokeGet;
         }
 
-        public RuntimeDelegateFactory.MemberSetDelegate<TObjectType, object> GetMemberSetDelegate()
+        public Action<TObjectType, object> GetMemberSetDelegate()
         {
             return InvokeSet;
         }

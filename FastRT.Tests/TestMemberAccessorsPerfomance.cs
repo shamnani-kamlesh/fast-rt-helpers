@@ -5,12 +5,12 @@ using NUnit.Framework;
 
 namespace FastRT.Tests
 {
-    class TestMemberAccessrosPerfomance
+    class TestMemberAccessorsPerfomance
     {
         [Test]
         public void TestPerfomance()
         {
-            const int total = 10000000;
+            const int total = 1000000;
             TestA a = new TestA{PropString = "test"};
 
             var sw = Stopwatch.StartNew();
@@ -21,7 +21,7 @@ namespace FastRT.Tests
             }
             sw.Stop();
 
-            Console.WriteLine("Native time: " + sw.ElapsedMilliseconds);
+            Console.WriteLine("Native C# time: " + sw.ElapsedMilliseconds);
 
             IObjectMemberAccessor<string> oma = a.GetObjectMemberAccessor(x => x.PropString);
             sw.Restart();

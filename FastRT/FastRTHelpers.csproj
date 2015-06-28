@@ -36,16 +36,20 @@
   <ItemGroup>
     <Compile Include="Impl\CastingDelegateWrapper.cs" />
     <Compile Include="IMemberInfo.cs" />
+    <Compile Include="Impl\FutureTypeInfo.cs" />
     <Compile Include="Impl\RuntimeDelegateFactory.cs" />
     <Compile Include="FuncMemberAccessor.cs" />
     <Compile Include="Impl\IMemberAccessDelegateProvider.cs" />
+    <Compile Include="ObjectAccessorBase.cs" />
     <Compile Include="ObjectCache.cs" />
     <Compile Include="IObjectMemberAccessor.cs" />
     <Compile Include="IMemberAccessor.cs" />
+    <Compile Include="OrderAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RTHelper.cs" />
     <Compile Include="DelegateMemberAccessor.cs" />
     <Compile Include="ObjectMemberAccessor.cs" />
+    <Compile Include="TypeGenerator.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

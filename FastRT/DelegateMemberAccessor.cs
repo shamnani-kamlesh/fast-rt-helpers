@@ -10,8 +10,8 @@ namespace FastRT
     /// <typeparam name="TMemberType">The System Type of the Member being accessed.</typeparam>
     public sealed class DelegateMemberAccessor<TObjectType, TMemberType> : IMemberAccessor<TObjectType, TMemberType>, IMemberInfo
     {
-        private readonly RuntimeDelegateFactory.MemberGetDelegate<TObjectType, TMemberType> _delMemberGet;
-        private readonly RuntimeDelegateFactory.MemberSetDelegate<TObjectType, TMemberType> _delMemberSet;
+        private readonly Func<TObjectType, TMemberType> _delMemberGet;
+        private readonly Action<TObjectType, TMemberType> _delMemberSet;
 
         public string MemberName { get; private set; }
         public Type MemberType { get; private set; }
