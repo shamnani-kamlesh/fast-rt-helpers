@@ -7,7 +7,7 @@ Reading/writing data works more than 5x times faster than the classic reflection
 
 ## Usage
 
-### Type-level accessors
+### Type-level member accessors
 
 **Generic version**
 
@@ -24,7 +24,7 @@ var value = accessor.GetValue(obj);
 accessor.SetValue(obj, newValue);
 ```
 
-### Object-level accessors
+### Object-level member accessors
 
 *Implemented as set of extension methods*
 
@@ -43,6 +43,35 @@ object obj = ...;
 var objectAccessor = obj.GetObjectMemberAccessor("MemberName");
 var value = objectAccessor.GetValue();
 objectAccessor.SetValue(newValue);
+```
+
+### Type generation from a list of field definitions {string, Type}
+
+**Generate a new Type (which implements IObjectAccessor)**
+
+```
+Dictionary<string, Type> typeDef = new Dictionary<string, Type>
+{
+	{"StringProp", typeof(String)},
+	{"IntProp", typeof(int)},
+	{"DateProp", typeof(DateTime)},
+	{"DoubleNullableProp", typeof(double?)}
+};
+Type t = TypeGenerator.MakeType(typeDef, "TestClassA");
+```
+
+**Instantiate a new object (generate a new type if necessary)**
+
+```
+Dictionary<string, object> objDef = new Dictionary<string, object>
+{
+	{"StringProp", "test data"},
+	{"IntProp", 48},
+	{"DateProp", DateTime.Now},
+	{"DoubleProp", 45.98}
+};
+var obj = TypeGenerator.MakeObject(objDef, "NewTypeB");
+obj["StringProp"] = "new data";
 ```
 
 ## TODO
