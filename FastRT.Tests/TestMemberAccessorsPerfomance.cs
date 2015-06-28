@@ -10,7 +10,7 @@ namespace FastRT.Tests
         [Test]
         public void TestPerfomance()
         {
-            const int total = 10000000;
+            const int total = 1000000;
             TestA a = new TestA{PropString = "test"};
 
             var sw = Stopwatch.StartNew();

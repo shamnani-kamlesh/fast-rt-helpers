@@ -44,13 +44,7 @@ namespace FastRT
 
         private static void InitPropertyAccessors()
         {
-            //select public properties and fields declared for the derived type (T), in order of their declaration
-            var members = (from member in typeof(T).GetMembers(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)
-                            where member is PropertyInfo || member is FieldInfo
-                            let order = member.GetCustomAttributes(typeof(OrderAttribute), false).Cast<OrderAttribute>().SingleOrDefault()
-                            orderby order == null ? 0 : order.Order
-                            select member).ToArray();
-
+            var members = GetOrderedMembers();
             s_getters = new Func<T, object>[members.Length];
             s_setters = new Action<T, object>[members.Length];
             s_nameIdx = new Dictionary<string, int>();
@@ -61,6 +55,16 @@ namespace FastRT
                 s_setters[i] = RuntimeDelegateFactory.RetrieveMemberSetValueDelegate<T, object>(members[i].Name, EmptyObjectCache<string>.Instance);
                 s_nameIdx.Add(members[i].Name, i);
             }
+        }
+
+        private static MemberInfo[] GetOrderedMembers()
+        {
+            var members = from member in typeof(T).GetMembers(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)
+                           where member is PropertyInfo || member is FieldInfo
+                           let order = member.GetCustomAttributes(typeof(OrderAttribute), false).Cast<OrderAttribute>().SingleOrDefault()
+                           orderby order == null ? 0 : order.Order
+                           select member;
+            return members.ToArray();
         }
 
         public V GetValue<V>(int idx)
