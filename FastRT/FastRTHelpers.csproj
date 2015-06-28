@@ -40,9 +40,11 @@
     <Compile Include="Impl\RuntimeDelegateFactory.cs" />
     <Compile Include="FuncMemberAccessor.cs" />
     <Compile Include="Impl\IMemberAccessDelegateProvider.cs" />
+    <Compile Include="ObjectAccessorBase.cs" />
     <Compile Include="ObjectCache.cs" />
     <Compile Include="IObjectMemberAccessor.cs" />
     <Compile Include="IMemberAccessor.cs" />
+    <Compile Include="OrderAttribute.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RTHelper.cs" />
     <Compile Include="DelegateMemberAccessor.cs" />
