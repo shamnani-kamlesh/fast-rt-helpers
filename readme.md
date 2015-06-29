@@ -5,6 +5,15 @@
 This library contains set of helper methods that provide fast runtime access to object's properties and fields.
 Reading/writing works 5-10x times faster than the classic reflection using GetField() / GetProperty() and then GetValue / SetValue().
 
+## Installation
+
+The library can be built from source or also is available as a [NuGet package][6e5dff96]:
+```
+PM> Install-Package FastRTHelpers
+```
+
+  [6e5dff96]: https://www.nuget.org/packages/FastRTHelpers/ "FastRTHelpers"
+
 ## Usage
 
 ### Type-level member accessors
