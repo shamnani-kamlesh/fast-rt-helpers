@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Runtime.CompilerServices;
 
 namespace FastRT
 {
@@ -7,7 +6,7 @@ namespace FastRT
     public sealed class OrderAttribute : Attribute
     {
         private readonly int _order;
-        public OrderAttribute([CallerLineNumber]int order = 0)
+        public OrderAttribute(int order = 0)
         {
             _order = order;
         }

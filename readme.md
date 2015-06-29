@@ -3,7 +3,7 @@
 ## Description
 
 This library contains set of helper methods that provide fast runtime access to object's properties and fields.
-Reading/writing data works more than 5x times faster than the classic reflection using GetProperty() -> GetValue / SetValue().
+Reading/writing works 5-10x times faster than the classic reflection using GetField() / GetProperty() and then GetValue / SetValue().
 
 ## Usage
 

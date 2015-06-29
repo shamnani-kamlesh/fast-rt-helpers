@@ -39,8 +39,8 @@ namespace FastRT.Tests
             sw.Restart();
             for (int i = 0; i < total; i++)
             {
-                string v = (string) pi.GetValue(a);
-                pi.SetValue(a, "new data");
+                string v = (string) pi.GetValue(a, null);
+                pi.SetValue(a, "new data", null);
             }
             sw.Stop();
 

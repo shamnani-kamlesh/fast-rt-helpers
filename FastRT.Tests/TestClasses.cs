@@ -14,15 +14,15 @@ namespace FastRT.Tests
 
     public class TestGenA : ObjectAccessorBase<TestGenA>
     {
-        [Order]
+        [Order(0)]
         public string PropString { get; set; }
-        [Order]
+        [Order(1)]
         public int PropInt { get; set; }
-        [Order]
+        [Order(2)]
         public double? Field1;
-        [Order]
+        [Order(3)]
         public DateTime DateProp { get; set; }
-        [Order]
+        [Order(4)]
         public TimeSpan? Interval { get; set; }
     }
 
