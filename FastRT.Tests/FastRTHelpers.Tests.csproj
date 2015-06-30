@@ -47,11 +47,13 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="TestActivationPerfomance.cs" />
     <Compile Include="TestClasses.cs" />
     <Compile Include="TestMemberAccessorsBehaviour.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestMemberAccessorsPerfomance.cs" />
     <Compile Include="TestObjectAccessorBehaviour.cs" />
+    <Compile Include="TestObjectFactoryBehaviour.cs" />
     <Compile Include="TestTypeGenerationBehaviour.cs" />
   </ItemGroup>
   <ItemGroup>

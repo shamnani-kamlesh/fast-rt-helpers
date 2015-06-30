@@ -1,14 +1,38 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 
 namespace FastRT.Impl
 {
-    internal class FutureTypeInfo : Type
+    internal class FutureListInfo : FutureTypeInfoBase
+    {
+        private Type _elType;
+
+        public FutureListInfo(Type elType)
+        {
+            _elType = elType;
+        }
+
+        public override string Name
+        {
+            get { return "List[" + _elType.Name + "]"; }
+        }
+
+        public override Type ResolveType()
+        {
+            ITypeResolver tr = _elType as ITypeResolver;
+            if (tr != null)
+                _elType = tr.ResolveType();
+            return typeof (List<>).MakeGenericType(_elType);
+        }
+    }
+
+    internal class FutureTypeRef : FutureTypeInfoBase
     {
         private readonly string _name;
 
-        public FutureTypeInfo(string name)
+        public FutureTypeRef(string name)
         {
             _name = name;
         }
@@ -17,6 +41,49 @@ namespace FastRT.Impl
         {
             get { return _name; }
         }
+
+        public override Type ResolveType()
+        {
+            return TypeGenerator.GetType(Name);
+        }
+    }
+
+    internal class FutureTypeInfo : FutureTypeInfoBase, ITypeDef
+    {
+        private readonly string _name;
+
+        public FutureTypeInfo(string name, IEnumerable<KeyValuePair<string, Type>> propDefs)
+        {
+            _name = name;
+            PropertyDefList = propDefs;
+        }
+
+        public override string Name
+        {
+            get { return _name; }
+        }
+
+        public IEnumerable<KeyValuePair<string, Type>> PropertyDefList { get; private set; }
+
+        public Type AsType()
+        {
+            return this;
+        }
+
+        public IObjectFactory MakeObjectFactory()
+        {
+            return new ObjectFactory(ResolveType());
+        }
+
+        public override Type ResolveType()
+        {
+            return TypeGenerator.GetType(Name) ?? TypeGenerator.MakeType(Name, PropertyDefList);
+        }
+    }
+
+    internal abstract class FutureTypeInfoBase : Type, ITypeResolver
+    {
+        public abstract Type ResolveType();
 
         #region NOT SUPPORTED
 
