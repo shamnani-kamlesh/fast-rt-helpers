@@ -145,17 +145,12 @@ namespace FastRT.Tests
             var elTypeDef = TypeGenerator.MakeTypeDef("TElement", new Dictionary<string, Type>
             {
                 {"StringProp", typeof(String)},
-                {"IntProp", typeof(int)},
-                {"DateProp", typeof(DateTime)},
-                {"DoubleNullableProp", typeof(double?)}
             });
-
             var pointTypeDef = TypeGenerator.MakeTypeDef("TPoint", new Dictionary<string, Type>
             {
                 {"X", typeof(double)},
                 {"Y", typeof(double)}
             });
-
             var objTypeDef = TypeGenerator.MakeTypeDef("TRoot", new Dictionary<string, Type>
             {
                 {"ListProp", TypeGenerator.MakeListDef(elTypeDef)},
@@ -164,17 +159,16 @@ namespace FastRT.Tests
                 {"Nodes", TypeGenerator.MakeListDef(TypeGenerator.MakeTypeRef("TRoot"))}
             });
 
-            IObjectFactory ta = objTypeDef.MakeObjectFactory();
-            IObjectFactory elTA = elTypeDef.MakeObjectFactory();
-            IObjectFactory sTA = pointTypeDef.MakeObjectFactory();
+            IObjectFactory objFactory = objTypeDef.MakeObjectFactory();
+            IObjectFactory elFactory = elTypeDef.MakeObjectFactory();
+            IObjectFactory pointFactory = pointTypeDef.MakeObjectFactory();
 
-            var obj = ta.NewObjectAccessor();
 
-            var list = elTA.NewList();
-            list.Add(elTA.NewObject());
-            list.Add(elTA.NewObject());
-            list.Add(elTA.NewObject());
-            
+            var list = elFactory.NewList();
+            list.Add(elFactory.NewObject());
+            list.Add(elFactory.NewObject());
+
+            var obj = objFactory.NewObjectAccessor();
             obj.SetValue("ListProp", list);
             foreach (var el in obj.GetValue<IEnumerable<IObjectAccessor>>("ListProp"))
             {
@@ -182,16 +176,16 @@ namespace FastRT.Tests
                 el[0] = "test";
             }
 
-            var st = sTA.NewObjectAccessor();
+            var st = pointFactory.NewObjectAccessor();
             st.SetValue("X", 10.5);
             st.SetValue("Y", 48.96);
 
             obj.SetValue("Center", st);
 
-            var parent = ta.NewObjectAccessor();
+            var parent = objFactory.NewObjectAccessor();
             obj.SetValue("Parent", parent);
 
-            var nodes = ta.NewList();
+            var nodes = objFactory.NewList();
             nodes.Add(obj);
 
             parent.SetValue("Nodes", nodes);
