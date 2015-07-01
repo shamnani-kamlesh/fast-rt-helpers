@@ -2,8 +2,8 @@
 
 ## Description
 
-This library contains set of helper methods that provide fast runtime access to object's properties and fields.
-Reading/writing of properties/fields works up to 10x times faster than the classic reflection using GetField() / GetProperty() and then GetValue / SetValue().
+The library contains set of helper methods that provide fast runtime access to object's properties and fields.
+This works up to 10x times faster than the classic reflection using GetField() / GetProperty() and then GetValue / SetValue().
 
 There are also methods that generate .NET types during run time from meta data.
 These types implement a IObjectAccessor interface which gives fast access to class members by indexer.

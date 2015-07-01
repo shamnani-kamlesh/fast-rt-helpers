@@ -6,14 +6,22 @@
     <version>$version$</version>
     <authors>Maxim Chuvilyaev</authors>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>Set of helper methods that provide fast runtime access to object's properties and fields (works more than 5x times faster than classic reflection)</description>
+    <description>
+      The library contains set of helper methods that provide fast runtime access to object's properties and fields.
+      This works up to 10x times faster than the classic reflection using GetField() / GetProperty() and then GetValue / SetValue().
+
+      There are also methods that generate .NET types during run time from meta data.
+      These types implement a IObjectAccessor interface which gives fast access to class members by indexer.
+    </description>
     <copyright>Anigo Systems Pty Ltd</copyright>
     <projectUrl>https://github.com/smax48/fast-rt-helpers</projectUrl>
     <licenseUrl>http://opensource.org/licenses/MIT</licenseUrl>
     <tags>Reflection Dynamic Member Access</tags>
     <language>en-US</language>
     <releaseNotes>
-      * 1.0.0 - Initial release
+      1.1.5660 - New functionality: runtime type generation from user-defined metadata
+      1.0.0.1 - Added .NET v4.0 support
+      1.0.0.0 - Initial release
     </releaseNotes>
   </metadata>
 </package>
