@@ -5,27 +5,28 @@ using System.Reflection;
 
 namespace FastRT.Impl
 {
-    internal class FutureListInfo : FutureTypeInfoBase
+    internal class FutureListInfo : FutureTypeInfoBase, IListDef
     {
-        private Type _elType;
+        private Type _listType;
 
-        public FutureListInfo(Type elType)
+        public FutureListInfo(ITypeResolver elTypeResolver)
         {
-            _elType = elType;
+            ElementType = elTypeResolver;
         }
 
         public override string Name
         {
-            get { return "List[" + _elType.Name + "]"; }
+            get { return "List[" + ElementType.Name + "]"; }
         }
 
         public override Type ResolveType()
         {
-            ITypeResolver tr = _elType as ITypeResolver;
-            if (tr != null)
-                _elType = tr.ResolveType();
-            return typeof (List<>).MakeGenericType(_elType);
+            if (_listType == null)
+                 _listType = TypeGenerator.ResolveListDef(this);
+            return _listType;
         }
+
+        public ITypeResolver ElementType { get; private set; }
     }
 
     internal class FutureTypeRef : FutureTypeInfoBase
@@ -52,7 +53,7 @@ namespace FastRT.Impl
     {
         private readonly string _name;
 
-        public FutureTypeInfo(string name, IEnumerable<KeyValuePair<string, Type>> propDefs)
+        public FutureTypeInfo(string name, IEnumerable<KeyValuePair<string, ITypeResolver>> propDefs)
         {
             _name = name;
             PropertyDefList = propDefs;
@@ -63,21 +64,12 @@ namespace FastRT.Impl
             get { return _name; }
         }
 
-        public IEnumerable<KeyValuePair<string, Type>> PropertyDefList { get; private set; }
+        public IEnumerable<KeyValuePair<string, ITypeResolver>> PropertyDefList { get; private set; }
 
-        public Type AsType()
-        {
-            return this;
-        }
-
-        public IObjectFactory MakeObjectFactory()
-        {
-            return new ObjectFactory(ResolveType());
-        }
 
         public override Type ResolveType()
         {
-            return TypeGenerator.GetType(Name) ?? TypeGenerator.MakeType(Name, PropertyDefList);
+            return TypeGenerator.ResolveTypeDef(this);
         }
     }
 

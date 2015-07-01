@@ -46,7 +46,7 @@
     <Compile Include="Impl\IMemberAccessDelegateProvider.cs" />
     <Compile Include="IObjectAccessor.cs" />
     <Compile Include="IObjectFactory.cs" />
-    <Compile Include="Impl\ITypeResolver.cs" />
+    <Compile Include="ITypeResolver.cs" />
     <Compile Include="ObjectAccessorBase.cs" />
     <Compile Include="ObjectCache.cs" />
     <Compile Include="IObjectMemberAccessor.cs" />
@@ -57,6 +57,7 @@
     <Compile Include="RTHelper.cs" />
     <Compile Include="DelegateMemberAccessor.cs" />
     <Compile Include="ObjectMemberAccessor.cs" />
+    <Compile Include="Impl\RuntimeTypeResolver.cs" />
     <Compile Include="TypeAccessor.cs" />
     <Compile Include="TypeGenerator.cs" />
   </ItemGroup>

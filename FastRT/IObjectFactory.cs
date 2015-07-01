@@ -5,7 +5,8 @@ namespace FastRT
 {
     public interface IObjectFactory
     {
-        IObjectAccessor NewObject();
+        T NewObject<T>();
+        object NewObject();
         IList NewList();
         Type SystemType { get; }
     }

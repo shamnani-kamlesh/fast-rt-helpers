@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace FastRT
 {
-    public interface ITypeDef
+    public interface ITypeDef : ITypeResolver
     {
-        string Name { get; }
-        IEnumerable<KeyValuePair<string, Type>> PropertyDefList { get; }
-        Type AsType();
-        IObjectFactory MakeObjectFactory();
+        IEnumerable<KeyValuePair<string, ITypeResolver>> PropertyDefList { get; }
+    }
+
+    public interface IListDef : ITypeResolver
+    {
+        ITypeResolver ElementType { get; }    
     }
 }

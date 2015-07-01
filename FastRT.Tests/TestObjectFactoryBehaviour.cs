@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using FastRT.Impl;
 using NUnit.Framework;
 
 namespace FastRT.Tests
@@ -10,21 +9,25 @@ namespace FastRT.Tests
         [Test]
         public void ShouldCreateObjects()
         {
-            IObjectFactory of = new ObjectFactory(typeof(TestGenA));
+            IObjectFactory of = typeof(TestGenA).MakeObjectFactory();
 
             Assert.That(of.SystemType, Is.EqualTo(typeof(TestGenA)));
 
-            var obj = of.NewObject();
+            var obj = of.NewObject<IObjectAccessor>();
             Assert.That(obj.GetType(), Is.EqualTo(typeof(TestGenA)));
             obj["PropInt"] = 48;
             int i = (int) obj["PropInt"];
             Assert.That(i, Is.EqualTo(48));
+
+            of = typeof (TestA).MakeObjectFactory();
+            var t = of.NewObject<TestA>();
+            t.Field1 = 12.34;
         }
 
         [Test]
         public void ShouldCreateLists()
         {
-            IObjectFactory of = new ObjectFactory(typeof(TestGenA));
+            IObjectFactory of = typeof(TestGenA).MakeObjectFactory();
             var list = of.NewList();
             list.Add(of.NewObject());
             list.Add(of.NewObject());

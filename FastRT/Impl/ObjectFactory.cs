@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 
 namespace FastRT.Impl
 {
-    public sealed class ObjectFactory : IObjectFactory
+    internal sealed class ObjectFactory : IObjectFactory
     {
         private Func<object> _ctorFunc;
         private Func<object> _listCtorFunc;
@@ -14,17 +14,20 @@ namespace FastRT.Impl
         {
             if(systemType == null)
                 throw new ArgumentNullException("systemType");
-            if(!typeof(IObjectAccessor).IsAssignableFrom(systemType))
-                throw new ArgumentException("Type must implement IObjectAccessor interface: " + systemType.FullName, "systemType");
 
             SystemType = systemType;            
         }
 
-        public IObjectAccessor NewObject()
+        public object NewObject()
         {
             if (_ctorFunc == null)
                 _ctorFunc = MakeCtorFunc(SystemType);
-            return (IObjectAccessor) _ctorFunc();
+            return _ctorFunc();
+        }
+
+        public T NewObject<T>()
+        {
+            return (T)NewObject();
         }
 
         public IList NewList()

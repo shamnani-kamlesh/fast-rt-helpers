@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using Newtonsoft.Json;
@@ -121,7 +120,7 @@ namespace FastRT.Tests
                 {"IntProp", 48},
                 {"DateProp", now},
                 {"DoubleProp", 45.98},
-                {"ArrayProp", new int[]{1,3,5,7}},
+                {"ArrayProp", new []{1,3,5,7}},
                 {"ListProp", new List<string>(new [] {"a", "b", "c"})}
             };
    
@@ -160,7 +159,7 @@ namespace FastRT.Tests
             var objTypeDef = TypeGenerator.MakeTypeDef("TRoot", new Dictionary<string, Type>
             {
                 {"ListProp", TypeGenerator.MakeListDef(elTypeDef)},
-                {"Center", pointTypeDef.AsType()},
+                {"Center", pointTypeDef},
                 {"Parent", TypeGenerator.MakeTypeRef("TRoot")},
                 {"Nodes", TypeGenerator.MakeListDef(TypeGenerator.MakeTypeRef("TRoot"))}
             });
@@ -169,7 +168,7 @@ namespace FastRT.Tests
             IObjectFactory elTA = elTypeDef.MakeObjectFactory();
             IObjectFactory sTA = pointTypeDef.MakeObjectFactory();
 
-            IObjectAccessor obj = ta.NewObject();
+            var obj = ta.NewObjectAccessor();
 
             var list = elTA.NewList();
             list.Add(elTA.NewObject());
@@ -183,13 +182,13 @@ namespace FastRT.Tests
                 el[0] = "test";
             }
 
-            IObjectAccessor st = sTA.NewObject();
+            var st = sTA.NewObjectAccessor();
             st.SetValue("X", 10.5);
             st.SetValue("Y", 48.96);
 
             obj.SetValue("Center", st);
 
-            var parent = ta.NewObject();
+            var parent = ta.NewObjectAccessor();
             obj.SetValue("Parent", parent);
 
             var nodes = ta.NewList();

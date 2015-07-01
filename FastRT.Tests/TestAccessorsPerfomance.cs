@@ -5,10 +5,10 @@ using NUnit.Framework;
 
 namespace FastRT.Tests
 {
-    class TestMemberAccessorsPerfomance
+    class TestAccessorsPerfomance
     {
         [Test]
-        public void TestPerfomance()
+        public void TestMemberAccessorsPerfomance()
         {
             const int total = 1000000;
             TestA a = new TestA{PropString = "test"};

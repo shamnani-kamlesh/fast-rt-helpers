@@ -38,17 +38,22 @@ namespace FastRT
             }
         }
 
+        public static Type MakeType(string name, IEnumerable<KeyValuePair<string, Type>> propDefs)
+        {
+            return MakeType((ITypeDef) MakeTypeDef(name, propDefs));
+        }
+
         /// <summary>
         /// Builds a new type from the provided list of properties. The new type implements IObjectAccessor interface
         /// </summary>
-        /// <param name="typeName">Type name. If null, a new unique name is generated</param>
-        /// <param name="typeDef">List of property names and corresponding types.</param>
+        /// <param name="typeDef">Type definition with list of property names and corresponding types.</param>
         /// <returns>Newly created type</returns>
-        public static Type MakeType(string typeName, IEnumerable<KeyValuePair<string, Type>> typeDef)
+        public static Type MakeType(ITypeDef typeDef)
         {
             if (typeDef == null)
                 throw new ArgumentNullException("typeDef");
 
+            string typeName = typeDef.Name;
             if (string.IsNullOrEmpty(typeName))
                 typeName = MakeUniqueName();
 
@@ -59,7 +64,7 @@ namespace FastRT
                 tb.SetParent(typeof(ObjectAccessorBase<>).MakeGenericType(tb));
 
                 int order = 0;
-                foreach (var fb in typeDef.Select(entry => tb.DefineField(entry.Key, ResolveType(entry.Value), FieldAttributes.Public)))
+                foreach (var fb in typeDef.PropertyDefList.Select(entry => tb.DefineField(entry.Key, entry.Value.ResolveType(), FieldAttributes.Public)))
                     AddOrderAttribute(fb, order++);
 
                 return tb.CreateType();
@@ -85,7 +90,7 @@ namespace FastRT
             var defEntries = objDef as IList<KeyValuePair<string, object>> ?? objDef.ToList();
             try
             {
-                newT = GetType(typeName) ?? MakeType(typeName, MakeTypeDef(defEntries));
+                newT = GetType(typeName) ?? MakeType(MakeTypeDef(typeName, defEntries));
             }
             finally
             {
@@ -99,19 +104,25 @@ namespace FastRT
             return obj;
         }
 
-        public static ITypeDef MakeTypeDef(string name, IEnumerable<KeyValuePair<string, Type>> typeDef)
+        public static Type MakeTypeDef(string name, IEnumerable<KeyValuePair<string, Type>> typeDef)
         {
-            return new FutureTypeInfo(name, typeDef);
+            var propDefs = typeDef.Select(entry => new KeyValuePair<string, ITypeResolver>(entry.Key, entry.Value.AsTypeResolver()));
+            return new FutureTypeInfo(name, propDefs);
+        }
+
+        public static ITypeResolver AsTypeResolver(this Type type)
+        {
+            return (type as ITypeResolver) ?? new RuntimeTypeResolver(type);
         }
 
         public static Type MakeListDef(Type elementType)
         {
-            return new FutureListInfo(elementType);
+            return new FutureListInfo(elementType.AsTypeResolver());
         }
 
-        public static Type MakeListDef(ITypeDef elTypeDef)
+        public static Type MakeListDef(ITypeResolver elType)
         {
-            return new FutureListInfo(elTypeDef.AsType());
+            return new FutureListInfo(elType);
         }
 
         public static Type MakeTypeRef(string typeName)
@@ -119,11 +130,24 @@ namespace FastRT
             return new FutureTypeRef(typeName);
         }
 
-        private static Type ResolveType(Type t)
+        public static IObjectFactory MakeObjectFactory(this Type type)
         {
-            //Member type can be a RuntimeType or a FutureTypeInfoBase-derived type (ITypeDef/IListDef/ITypeRef)
-            ITypeResolver tr = t as ITypeResolver;
-            return tr != null ? tr.ResolveType() : t;
+            return new ObjectFactory(type.AsTypeResolver().ResolveType());
+        }
+
+        public static IObjectAccessor NewObjectAccessor(this IObjectFactory factory)
+        {
+            return factory.NewObject<IObjectAccessor>();
+        }
+
+        public static Type ResolveTypeDef(ITypeDef td)
+        {
+            return GetType(td.Name) ?? MakeType(td);
+        }
+
+        public static Type ResolveListDef(IListDef listDef)
+        {
+            return typeof(List<>).MakeGenericType(listDef.ElementType.ResolveType());
         }
 
         private static void AddOrderAttribute(FieldBuilder fb, int order)
@@ -133,21 +157,21 @@ namespace FastRT
             fb.SetCustomAttribute(attributeBuilder);
         }
 
-        private static IEnumerable<KeyValuePair<string, Type>> MakeTypeDef(IEnumerable<KeyValuePair<string, object>> objDef)
+        private static ITypeDef MakeTypeDef(string name, IEnumerable<KeyValuePair<string, object>> objDef)
         {
-            return objDef.Select(d => new KeyValuePair<string, Type>(d.Key, GetMemberTypeFromValue(d.Value)));
+            var propDefs = objDef.Select(d => new KeyValuePair<string, ITypeResolver>(d.Key, GetMemberTypeFromValue(d.Value)));
+            return new FutureTypeInfo(name, propDefs);
         }
 
-        private static Type GetMemberTypeFromValue(object value)
+        private static ITypeResolver GetMemberTypeFromValue(object value)
         {
-            return value == null ? typeof(Object) : value.GetType();
+            return AsTypeResolver(value == null ? typeof(Object) : value.GetType());
         }
 
         private static string MakeUniqueName()
         {
             return "AutoGen_" + Guid.NewGuid().ToString("N");
         }
-
     }
 
 }
