@@ -13,6 +13,11 @@ namespace FastRT
             return new DelegateMemberAccessor<T, V>(mi.Name, readOnly, memberCache);
         }
 
+        public static IMemberAccessor<T, V> GetMemberAccessor<T, V>(string memberName, bool readOnly = false, IObjectCache<string> memberCache = null) where T : class
+        {
+            return new DelegateMemberAccessor<T, V>(memberName, readOnly, memberCache);
+        }
+
         public static IMemberAccessor GetMemberAccessor(Type objectType, string memberName, bool readOnly = false, IObjectCache<string> memberCache = null) 
         {
             var memberType = GetMemberType(objectType, memberName);
@@ -90,7 +95,7 @@ namespace FastRT
             return mi.DeclaringType.Name + "." + mi.Name;
         }
 
-                public static Type GetMemberType(Type objectType, string memberName)
+        public static Type GetMemberType(Type objectType, string memberName)
         {
             var member = objectType.GetMember(memberName).FirstOrDefault();
             if (member == null)

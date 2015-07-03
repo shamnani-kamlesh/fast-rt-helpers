@@ -18,7 +18,7 @@ namespace FastRT
         }
         public static IMemberAccessor<T, V> GetMemberAccessor<V>(string memberName, bool readOnly = false, IObjectCache<string> memberCache = null)
         {
-            return new DelegateMemberAccessor<T, V>(memberName, readOnly, memberCache);
+            return RTHelper.GetMemberAccessor<T, V>(memberName, readOnly, memberCache);
         }
     }
 }

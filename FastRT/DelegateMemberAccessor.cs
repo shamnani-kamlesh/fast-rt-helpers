@@ -1,4 +1,3 @@
-using System;
 using FastRT.Impl;
 
 namespace FastRT
@@ -8,63 +7,23 @@ namespace FastRT
     /// </summary>
     /// <typeparam name="TObjectType">The System Type of the Object which the member belongs to.</typeparam>
     /// <typeparam name="TMemberType">The System Type of the Member being accessed.</typeparam>
-    public sealed class DelegateMemberAccessor<TObjectType, TMemberType> : IMemberAccessor<TObjectType, TMemberType>, IMemberInfo
+    public sealed class DelegateMemberAccessor<TObjectType, TMemberType> : FuncMemberAccessor<TObjectType, TMemberType>
     {
-        private readonly Func<TObjectType, TMemberType> _delMemberGet;
-        private readonly Action<TObjectType, TMemberType> _delMemberSet;
+        private readonly string _memberName;
+        //TODO: make this class internal (update all references in mobileezy)!!!
 
-        public string MemberName { get; private set; }
-        public Type MemberType { get; private set; }
-        public Type ObjectType { get; private set; }
-
-        public DelegateMemberAccessor(string memberName, bool readOnly = false, IObjectCache<string> memberCache = null)
+        public DelegateMemberAccessor(string memberName, bool readOnly = false, IObjectCache<string> memberCache = null) 
+            :base(
+            RuntimeDelegateFactory.RetrieveMemberGetValueDelegate<TObjectType, TMemberType>(memberName, memberCache),
+            readOnly ? null : RuntimeDelegateFactory.RetrieveMemberSetValueDelegate<TObjectType, TMemberType>(memberName, memberCache),
+            true)
         {
-            MemberName = memberName;
-            MemberType = typeof(TMemberType);
-            ObjectType = typeof(TObjectType);
-            _delMemberGet = RuntimeDelegateFactory.RetrieveMemberGetValueDelegate<TObjectType, TMemberType>(memberName, memberCache);
-            if(!readOnly)
-                _delMemberSet = RuntimeDelegateFactory.RetrieveMemberSetValueDelegate<TObjectType, TMemberType>(memberName, memberCache);
+            _memberName = memberName;
         }
 
-        public bool HasGetter
+        public override string MemberName
         {
-            get { return _delMemberGet != null; }
-        }
-
-        public bool HasSetter
-        {
-            get { return _delMemberSet != null; }
-        }
-
-        object IMemberAccessor.GetValue(object instance)
-        {
-            return GetValue((TObjectType) instance);
-        }
-
-        void IMemberAccessor.SetValue(object instance, object value)
-        {
-            SetValue((TObjectType) instance, (TMemberType) value);
-        }
-
-        public TMemberType GetValue(TObjectType instance)
-        {
-            if (_delMemberGet != null)
-                return _delMemberGet(instance);
-
-            throw new InvalidOperationException(String.Format(
-                "Member: '{0}' of Type: '{1}' does not have a public Get accessor",
-                MemberName, ObjectType.Name));
-        }
-
-        public void SetValue(TObjectType instance, TMemberType value)
-        {
-            if (_delMemberSet != null)
-                _delMemberSet(instance, value);
-            else
-                throw new InvalidOperationException(String.Format(
-                    "Member: '{0}' of Type: '{1}' does not have a public Set accessor",
-                    MemberName, ObjectType.Name));
+            get { return _memberName; }
         }
 
         public override string ToString()

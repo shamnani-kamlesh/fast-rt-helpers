@@ -2,15 +2,17 @@
 
 namespace FastRT
 {
-    public sealed class FuncMemberAccessor<TObject, TMember> : IMemberAccessor<TObject, TMember>, IMemberInfo
+    public class FuncMemberAccessor<TObject, TMember> : IMemberAccessor<TObject, TMember>
     {
         private readonly Func<TObject, TMember> _readValue;
         private readonly Action<TObject, TMember> _writeValue;
+        private readonly bool _throwIfNotDefined;
 
-        public FuncMemberAccessor(Func<TObject, TMember> readValue, Action<TObject, TMember> writeValue = null)
+        public FuncMemberAccessor(Func<TObject, TMember> readValue, Action<TObject, TMember> writeValue = null, bool throwIfNotDefined = false)
         {
             _readValue = readValue;
             _writeValue = writeValue;
+            _throwIfNotDefined = throwIfNotDefined;
         }
 
         public bool HasGetter
@@ -35,13 +37,21 @@ namespace FastRT
 
         public TMember GetValue(TObject instance)
         {
-            return HasGetter ? _readValue(instance) : default(TMember);
+            if (HasGetter)
+                return _readValue(instance);
+            if(_throwIfNotDefined)
+                throw new InvalidOperationException(
+                    String.Format("Member: '{0}' of Type: '{1}' does not have a Get accessor", MemberName, ObjectType.Name));
+            return default(TMember);
         }
 
         public void SetValue(TObject instance, TMember value)
         {
             if (HasSetter)
                 _writeValue(instance, value);
+            else if (_throwIfNotDefined)
+                throw new InvalidOperationException(
+                    String.Format("Member: '{0}' of Type: '{1}' does not have a Get accessor",MemberName, ObjectType.Name));
         }
 
         public override string ToString()
@@ -49,7 +59,7 @@ namespace FastRT
             return (_readValue ?? (object)_writeValue).ToString();
         }
 
-        public string MemberName 
+        public virtual string MemberName 
         {
             get { return "F<" + ObjectType.Name + "," + MemberType.Name + ">"; }
         }
