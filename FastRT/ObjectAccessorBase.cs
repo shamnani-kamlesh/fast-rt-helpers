@@ -46,7 +46,7 @@ namespace FastRT
             var members = from member in typeof(T).GetMembers(BindingFlags.Instance | BindingFlags.Public | BindingFlags.DeclaredOnly)
                            where member is PropertyInfo || member is FieldInfo
                            let order = member.GetCustomAttributes(typeof(OrderAttribute), false).Cast<OrderAttribute>().SingleOrDefault()
-                           orderby order == null ? 0 : order.Order
+                           orderby order?.Order ?? 0
                            select member;
             return members.ToArray();
         }
@@ -81,6 +81,11 @@ namespace FastRT
         {
             get { return this[s_nameIdx[name]]; }
             set { this[s_nameIdx[name]] = value; }
+        }
+
+        public ICollection<string> GetPropertyNames()
+        {
+            return s_nameIdx.Keys;
         }
     }
 

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace FastRT
 {
     /// <summary>
@@ -12,5 +14,6 @@ namespace FastRT
         
         object this[int idx] { get; set; }
         object this[string name] { get; set; }
+        ICollection<string> GetPropertyNames();
     }
 }

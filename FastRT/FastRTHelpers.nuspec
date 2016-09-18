@@ -19,6 +19,7 @@
     <tags>Reflection Dynamic Member Access</tags>
     <language>en-US</language>
     <releaseNotes>
+      1.2.0 - Added IObjectAccessor.GetPropertyNames()
       1.1.5660 - New functionality: runtime type generation from user-defined metadata
       1.0.0.1 - Added .NET v4.0 support
       1.0.0.0 - Initial release
