@@ -21,11 +21,8 @@ namespace FastRT
         {            
         }
 
-        static readonly EmptyObjectCache<TKey> s_instance = new EmptyObjectCache<TKey>();
-        public static IObjectCache<TKey> Instance
-        {
-            get { return s_instance; }
-        }
+        private static readonly EmptyObjectCache<TKey> s_instance = new EmptyObjectCache<TKey>();
+        public static IObjectCache<TKey> Instance => s_instance;
     }
 
     public class ObjectCache<TKey> : IObjectCache<TKey>

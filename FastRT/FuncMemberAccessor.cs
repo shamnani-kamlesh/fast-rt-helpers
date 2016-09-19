@@ -15,15 +15,9 @@ namespace FastRT
             _throwIfNotDefined = throwIfNotDefined;
         }
 
-        public bool HasGetter
-        {
-            get { return _readValue != null; }
-        }
+        public bool HasGetter => _readValue != null;
 
-        public bool HasSetter
-        {
-            get { return _writeValue != null; }
-        }
+        public bool HasSetter => _writeValue != null;
 
         object IMemberAccessor.GetValue(object instance)
         {
@@ -41,7 +35,7 @@ namespace FastRT
                 return _readValue(instance);
             if(_throwIfNotDefined)
                 throw new InvalidOperationException(
-                    String.Format("Member: '{0}' of Type: '{1}' does not have a Get accessor", MemberName, ObjectType.Name));
+                    $"Member: '{MemberName}' of Type: '{ObjectType.Name}' does not have a Get accessor");
             return default(TMember);
         }
 
@@ -51,7 +45,7 @@ namespace FastRT
                 _writeValue(instance, value);
             else if (_throwIfNotDefined)
                 throw new InvalidOperationException(
-                    String.Format("Member: '{0}' of Type: '{1}' does not have a Get accessor",MemberName, ObjectType.Name));
+                    $"Member: '{MemberName}' of Type: '{ObjectType.Name}' does not have a Get accessor");
         }
 
         public override string ToString()
@@ -59,19 +53,10 @@ namespace FastRT
             return (_readValue ?? (object)_writeValue).ToString();
         }
 
-        public virtual string MemberName 
-        {
-            get { return "F<" + ObjectType.Name + "," + MemberType.Name + ">"; }
-        }
+        public virtual string MemberName => "F<" + ObjectType.Name + "," + MemberType.Name + ">";
 
-        public Type MemberType 
-        {
-            get { return typeof (TMember); }
-        }
+        public Type MemberType => typeof (TMember);
 
-        public Type ObjectType 
-        {
-            get { return typeof (TObject); }
-        }
+        public Type ObjectType => typeof (TObject);
     }
 }

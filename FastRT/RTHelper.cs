@@ -26,6 +26,14 @@ namespace FastRT
             return (IMemberAccessor) result;
         }
 
+        public static IMemberAccessor GetMemberAccessor(MemberInfo mi, bool readOnly = false, IObjectCache<string> memberCache = null)
+        {
+            var memberType = GetMemberType(mi);
+            var genType = typeof(DelegateMemberAccessor<,>).MakeGenericType(mi.DeclaringType, memberType);
+            var result = Activator.CreateInstance(genType, mi.Name, readOnly, memberCache);
+            return (IMemberAccessor)result;
+        }
+
         public static IObjectMemberAccessor<V> GetObjectMemberAccessor<T, V>(this T obj, Expression<Func<T, V>> func, bool readOnly = false, IObjectCache<string> memberCache = null) where T : class
         {
             var mi = GetMemberFromExpression(func);
@@ -40,7 +48,7 @@ namespace FastRT
         public static IObjectMemberAccessor GetObjectMemberAccessor(this object obj, string memberName, bool readOnly = false, IObjectCache<string> memberCache = null)
         {
             if(obj == null)
-                throw new ArgumentNullException("obj");
+                throw new ArgumentNullException(nameof(obj));
             IMemberAccessor ma = GetMemberAccessor(obj.GetType(), memberName, readOnly, memberCache);
             var oaType = typeof (ObjectMemberAccessor<,>).MakeGenericType(ma.ObjectType, ma.MemberType);
             var result = Activator.CreateInstance(oaType, obj, ma);
@@ -50,12 +58,12 @@ namespace FastRT
         public static MemberInfo GetMemberFromExpression<T, V>(Expression<Func<T, V>> expr)
         {
             if (expr == null)
-                throw new ArgumentNullException("expr");
+                throw new ArgumentNullException(nameof(expr));
 
             MemberExpression me = expr.Body as MemberExpression;
             if (me == null)
             {
-                if (expr.Body.NodeType == ExpressionType.Convert && typeof(V) == typeof(Object))
+                if (expr.Body.NodeType == ExpressionType.Convert && typeof(V) == typeof(object))
                     me = ((UnaryExpression)expr.Body).Operand as MemberExpression;
                 if (me == null)
                     throw new ArgumentException("Unsupported expression (must be a property or field reference): " + expr);
@@ -90,7 +98,7 @@ namespace FastRT
         public static string GetFullName(this MemberInfo mi)
         {
             if(mi == null || mi.DeclaringType == null)
-                throw new ArgumentException("Member Info doesn't have a Declaring Type", "mi");
+                throw new ArgumentException("Member Info doesn't have a Declaring Type", nameof(mi));
 
             return mi.DeclaringType.Name + "." + mi.Name;
         }
@@ -103,10 +111,16 @@ namespace FastRT
                 throw new NotImplementedException("Property not implemented: " + objectType.FullName + "." + memberName);
             }
 
+            return GetMemberType(member);
+        }
+
+        private static Type GetMemberType(MemberInfo member)
+        {
             Type memberType;
-            if (member is PropertyInfo)
+            var info = member as PropertyInfo;
+            if (info != null)
             {
-                memberType = ((PropertyInfo) member).PropertyType;
+                memberType = info.PropertyType;
             }
             else if (member is FieldInfo)
             {
@@ -118,6 +132,5 @@ namespace FastRT
             }
             return memberType;
         }
-
     }
 }

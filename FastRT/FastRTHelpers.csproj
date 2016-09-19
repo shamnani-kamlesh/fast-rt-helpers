@@ -37,6 +37,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IMemberValueAccessor.cs" />
     <Compile Include="Impl\CastingDelegateWrapper.cs" />
     <Compile Include="IMemberInfo.cs" />
     <Compile Include="Impl\FutureTypeInfo.cs" />
@@ -47,6 +48,7 @@
     <Compile Include="IObjectAccessor.cs" />
     <Compile Include="IObjectFactory.cs" />
     <Compile Include="ITypeResolver.cs" />
+    <Compile Include="MemberValueAccessor.cs" />
     <Compile Include="ObjectAccessorBase.cs" />
     <Compile Include="ObjectCache.cs" />
     <Compile Include="IObjectMemberAccessor.cs" />
