@@ -20,16 +20,17 @@ namespace FastRT
 
         public static IMemberAccessor GetMemberAccessor(Type objectType, string memberName, bool readOnly = false, IObjectCache<string> memberCache = null) 
         {
-            var memberType = GetMemberType(objectType, memberName);
-            var genType = typeof (DelegateMemberAccessor<,>).MakeGenericType(objectType, memberType);
-            var result = Activator.CreateInstance(genType, memberName, readOnly, memberCache);
-            return (IMemberAccessor) result;
+            return CreateMemberAccessor(GetMemberInfo(objectType, memberName), readOnly, memberCache);
         }
 
         public static IMemberAccessor GetMemberAccessor(MemberInfo mi, bool readOnly = false, IObjectCache<string> memberCache = null)
         {
-            var memberType = GetMemberType(mi);
-            var genType = typeof(DelegateMemberAccessor<,>).MakeGenericType(mi.DeclaringType, memberType);
+            return CreateMemberAccessor(GetMemberInfo(mi), readOnly, memberCache);
+        }
+
+        private static IMemberAccessor CreateMemberAccessor(MemberTypeInfo mi, bool readOnly, IObjectCache<string> memberCache)
+        {
+            var genType = typeof(DelegateMemberAccessor<,>).MakeGenericType(mi.DeclaringType, mi.MemberType);
             var result = Activator.CreateInstance(genType, mi.Name, readOnly, memberCache);
             return (IMemberAccessor)result;
         }
@@ -105,32 +106,50 @@ namespace FastRT
 
         public static Type GetMemberType(Type objectType, string memberName)
         {
+            return GetMemberInfo(objectType, memberName).MemberType;
+        }
+
+        private static MemberTypeInfo GetMemberInfo(Type objectType, string memberName)
+        {
             var member = objectType.GetMember(memberName).FirstOrDefault();
             if (member == null)
             {
-                throw new NotImplementedException("Property not implemented: " + objectType.FullName + "." + memberName);
+                throw new NotImplementedException("Property or field not found: " + objectType.FullName + "." + memberName);
             }
 
-            return GetMemberType(member);
+            return GetMemberInfo(member);
         }
 
-        private static Type GetMemberType(MemberInfo member)
+        private static MemberTypeInfo GetMemberInfo(MemberInfo member)
         {
             Type memberType;
-            var info = member as PropertyInfo;
-            if (info != null)
+            if (member is PropertyInfo info)
             {
                 memberType = info.PropertyType;
             }
-            else if (member is FieldInfo)
+            else if (member is FieldInfo field)
             {
-                memberType = ((FieldInfo) member).FieldType;
+                memberType = field.FieldType;
             }
             else
             {
                 throw new NotSupportedException("Member type not supported: " + member.MemberType);
             }
-            return memberType;
+
+            return new MemberTypeInfo
+            {
+                Name = member.Name,
+                MemberType = memberType,
+                DeclaringType = member.DeclaringType
+            };
         }
+
+        internal class MemberTypeInfo
+        {
+            public string Name { get; set; }
+            public Type MemberType { get; set; }
+            public Type DeclaringType { get; set; }
+        }
+
     }
 }

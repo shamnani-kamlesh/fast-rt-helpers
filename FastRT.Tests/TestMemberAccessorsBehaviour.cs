@@ -56,6 +56,27 @@ namespace FastRT.Tests
             Assert.That(oma.Value, Is.EqualTo(a1.Field1));            
         }
 
+        [Test]
+        public void ShouldAcceptParentTypeForInheritedMembers()
+        {
+            var mb = RTHelper.GetMemberAccessor(typeof(TestB), "PropInt");
+            var a1 = CreateTestObject();
+            int v1 = (int)mb.GetValue(a1);
+            Assert.That(v1, Is.EqualTo(48));
+        }
+
+        [Test]
+        public void ShouldAcceptChildTypeForInheritedMembers()
+        {
+            var mb = RTHelper.GetMemberAccessor(typeof(TestA), "PropInt");
+            var b1 = new TestB
+            {
+                PropInt = 48
+            };
+            int v1 = (int)mb.GetValue(b1);
+            Assert.That(v1, Is.EqualTo(48));
+        }
+
         private static void ShouldBehaveSimilar(IMemberAccessor<TestA, string> ma, TestA a1)
         {
             Assert.That(ma.GetValue(a1), Is.EqualTo(a1.PropString));

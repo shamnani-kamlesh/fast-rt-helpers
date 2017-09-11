@@ -9,6 +9,11 @@ namespace FastRT.Tests
         public double Field1;
     }
 
+    public class TestB : TestA
+    {
+        public int PropB { get; set; }
+    }
+
     public class TestGenA : ObjectAccessorBase<TestGenA>
     {
         [Order(0)]
